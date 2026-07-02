@@ -1,0 +1,52 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{lipsum}
+
+
+\begin{document}
+
+\begin{itemize}
+    \item{Metodología}
+    
+    Se realizaron dos algoritmos de clustering K-means y DBSCAN ambos realizados con 3 métricas distinas, esto para comparar efectividad del mismo,
+    Euclidiana, DTW y MSM
+
+    \item{datos}
+    
+    En Colombia existe una institución que dirige examenes nacionales de calidad educativa, en estos examenes se mide en este caso la calidad de los colegios nacionales, tanto publicos, privados, rurales en general cualquier colegio en el país,
+    el grado en el que se hace este examen es en $11^{\circ}$ o comunmente al finalizar los estudios en bachillerato, el examen se realiza 2 veces al año, este examen tiene una dificultad igual o menor a lo aprendido durante todos los años del colegio, además es calificado por areas obteniendo individualmente un puntaje individual,
+    el cual es usado comunmente como se menciono para medir la calidad de la institución donde estudia el estudiante a su vez que al mismo estudiante, obteniendo beneficios luego de cierto puntaje, por lo que sí es un examen ciertamente importante, a su vez es un requisito para ingresar a cualquier entidad de educación superior dentro del país, la entidad encargada de esto (meter referencia del icfes), llamada igual que el examen,
+    es quien brinda los datos publicos con los que estoy trabajando, en un historico de registros semestrales, 
+
+    se hará un previo resumen de como se interpretan los datos, para el analisis posterior.
+
+    Lo primero a mencionar es que se hará una clasificación departamental para hacer una clasificación de cuales departamentos son los más similares en cuanto a los resultados del examen, una vez tomado esto ahora vamos a tiempos, el examen se hace desde 1968, sin embargo la mayor cantidad de departamentos implicados con registro semestral completo, 25 departamentos, se da desde el año 2010-1 hasta el 2025-2, sin embargo no falta mucho para tener otro registro de 2026-1
+, los departamentos mencionados son; 
+
+    casanare, caldas, tolima, caqueta, norte de santander, cordoba, nariño, santander, cundinamarca, cesar, huila, atlantico, la guajira, cauca, bogota, arauca, boyaca, risaralda, bolivar, putumayo, magdalena, quindio, valle del cauca, antioquia, meta
+    
+    este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el icfes sufrio un por año, es decir 
+
+    \item{resultados}
+    
+    DBSCAN (euclidian)
+
+    DBSCAN (DTW)
+
+    DBSCAN (MSM)
+
+    K-means (euclidian)
+
+    K-means (DTW)
+
+    K-means (MSM)
+
+\end{itemize}
+
+
+
+\end{document}

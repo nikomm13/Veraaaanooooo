@@ -1,0 +1,83 @@
+\documentclass[12pt,twoside]{book}
+
+% Paquetes útiles
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{lipsum} % texto de prueba
+
+% Configuración de márgenes tipo cuaderno
+\geometry{
+  paperwidth=21cm,
+  paperheight=29.7cm,
+  inner=2.5cm, % margen interno
+  outer=2cm,   % margen externo
+  top=2.5cm,
+  bottom=2.5cm,
+  headsep=1cm,
+  footskip=1cm
+}
+
+% Opcional: líneas tipo cuaderno
+\usepackage{background}
+\backgroundsetup{
+  scale=1,
+  color=black,
+  opacity=0.1,
+  angle=0,
+  position=current page.south,
+  vshift=0cm,
+  contents={\rule{21cm}{0.4pt}}
+}
+
+\begin{document}
+
+\chapter{Teoría de grafos (repaso)}
+
+Se revisará teoría de grafos necesaria para el proyecto
+
+\begin{itemize}
+\item{Grafo: } Conjunto finito V(G) (nodos), E(G) (aristas) familia de pares no ordenados. 
+
+Notación: $G(V,E)$, grafo G con vertices V y aristas E.
+
+\item{Subgrafo:} Una parte mas pequeña que todo el conjunto $G(V, E)$ donde esta contenido en los vertices y las aristas
+
+\item{Grafo simple:} El conjunto $G(V,E)$ viene de un conjunto o familia más específico, pares ordenados únicos.
+
+\item{Grafo ponderado:} Si tiene un número asociado para cada arísta (un solo número), como se suele representar en matriz el gráfo la matriz de pesos se asocia a el matriz del mismo tamaño que todos los vertices.
+\item 
+\item{Grafo dirigido:} familia de pares ordenados ya que se permiten devolver.
+
+\item{Camino:} Cadena de un subgrafo no hay restricciones así que puede ser al menos una arista. 
+\item{Grafo conexo:} si todo se conecta al menos una vez por un camino
+\item{Grafo completo:} Cada par de nodos existe una arista (como una red) grafo completo se denota como $K_n$
+\item{Grafo denso y grafo disperso:} Muy subjetivo como que cercano a $K_n$ denso, todo completo es denso de lo contrario es disperso
+\item{Matriz de adyacencia:} matriz binaria de tamaño vertices por vertices, siempre es cuadrada. claramente si no es dirigido es simétrica por que a b es igual que b a y ambos tendrán un 1.
+
+
+\item{Grafo de un nodo:} Al número de aristas que le insiden a un vértice se le nota grado y se llama $k_i$ (en grafos simples)
+para grafos ponderados es la sumatoria de los pesos de las aristas que inciden $\hat{k}_i$ 
+
+si es un grafo dirigido se cuentan salidas y entradas a parte $k^{out}_{i}$, $k^{in}_{i}$
+
+\end{itemize}    
+
+\chapter{Modularidad}
+
+Función que mide calidad de una partición dada de un grafo (me imagino una partíción como un subgrafo pero funcional), se puede maximizar esta metrica así que es una métrica, cuantificar nivel de iteracción entre los nodos
+\begin{equation}
+Q(P) = \frac{1}{2m}\sum_{i,j\in V}\big[ A_{ij}-\frac{k_ik_j}{2L}\big]\delta(C_i, C_j)
+\end{equation}
+
+P partición (como en conjuntos) a medir en su calidad imagino que en cuanto a ponderación similar o algo 
+
+m número de enlaces imagino que número de particiones o algo asi 
+
+$Aij$ recorrido de toda la matriz en distintas conexiones 
+
+$\delta(C_i, C_j)$ discrimina entre pertenecer a la misma comunidad o no 
+
+
+\end{document}
