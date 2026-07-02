@@ -4,16 +4,72 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
+\usepackage{as}
 \usepackage{lipsum}
+\usepackage{amsmath}    % Entornos matemáticos avanzados (align, gather, etc.)
+\usepackage{amssymb}    % Símbolos adicionales (conjuntos, flechas, etc.)
+\usepackage{amsfonts}   % Fuentes matemáticas (ℝ, ℤ, ℕ, etc.)
+
+% Opcional pero útil
+\usepackage{mathtools}  % Extiende amsmath con mejoras (colores, notación, etc.)
+\usepackage{bm}   
 
 
 \begin{document}
 
 \begin{itemize}
     \item{Metodología}
-    
-    Se realizaron dos algoritmos de clustering K-means y DBSCAN ambos realizados con 3 métricas distinas, esto para comparar efectividad del mismo,
-    Euclidiana, DTW y MSM
+
+    Con el fin de clasificar los datos mencionados en el item anterior, 
+    en esta investigación se utilizó una técinica de machine learning de aprendizaje no supervisado, 
+    técnica que que busca agrupar objetos similares en conjuntos llamados clústeres, de manera
+     que los elementos dentro de un grupo sean lo más parecidos posible 
+     entre sí y lo más diferentes posible respecto a otros grupos, similar a una partición clasica 
+     en teoría de conjuntos, para hallar dichos grupos ubicados en los datos se usaron dos algoritmos
+    de clustering, llamados K-means y DBSCAN, ambos realizados con 3 métricas distinas, esto para comparar efectividad del mismo,
+    (Euclidiana, DTW y MSM)
+
+    Ahora se explicará un poco el funcionamiento de estos algoritmos de clasificación, las distintas métricas y a su vez el 
+    como se implementaron en este conjunto de datos en particular y posteriormente en el proximo item los resultados posteriores a aplicar estas
+    clasificaciones.
+
+    K-means: Este es un algoritmo clasico de clasificación de grupos o clustering, consiste en elegir (k) 
+    número de separaciones en el conjunto,una vez determinado este número el algoritmo tiene como principio
+    minimizar distancias de ese punto llamado centroide a los puntos cercanos a el,la ubicación de este
+    centroide en el conjunto de datos es justo lo que se busca minimiza es el objetivo de este algoritmo,
+    al ser ubicado estos k-puntos en sus lugares más optimos los que estan a una distancia similar de este 
+    punto son los que cumplen la distancia minima también y serán los que conformarán el cluster de cada k.
+
+    El algoritmo K-means busca minimizar la \textbf{función objetivo}:
+
+\[
+J = \sum_{j=1}^{k} \sum_{x \in C_j} \| x - \mu_j \|^2
+\]
+
+
+
+donde:
+\begin{itemize}
+    \item $J$ es un \textbf{escalar} que representa el costo total (inercia) del clustering.
+    \item $k$ es el número de clústeres definidos.
+    \item $C_j$ es el conjunto de puntos asignados al clúster $j$.
+    \item $\mu_j$ es el \textbf{centroide} del clúster $j$, un vector en $\mathbb{R}^n$.
+\end{itemize}
+
+El centroide de cada clúster se calcula como la media de sus puntos:
+
+
+
+\[
+\mu_j = \frac{1}{|C_j|} \sum_{x \in C_j} x
+\]
+
+donde $|C_j|$ es el número de puntos en el clúster $j$.
+
+
+
+
+
 
     \item{datos}
     
