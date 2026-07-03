@@ -1,16 +1,33 @@
-\documentclass{article}
+\documentclass[12pt,a4paper]{report}
 
-% Paquetes matemáticos
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{mathtools}
-\usepackage{bm}
+% Paquetes básicos
+\usepackage[utf8]{inputenc}   % Codificación
+\usepackage[T1]{fontenc}      % Fuente
+\usepackage[spanish]{babel}   % Idioma
+\usepackage{amsmath, amssymb, amsfonts, mathtools, bm} % Matemáticas
+\usepackage{graphicx}         % Imágenes
+\usepackage{hyperref}         % Hipervínculos
+\usepackage{geometry}         % Márgenes
+\geometry{margin=2.5cm}
+
+% Datos de portada
+\title{Reporte}
+\author{Autor:Nicolas Moreno Martinez}
+\date{\today}
 
 \begin{document}
 
-\begin{itemize}
-    \item{Metodología}
+% Portada
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Tabla de contenido
+\tableofcontents
+\newpage
+
+% Secciones principales
+\chapter{Metodología}
 
     Con el fin de clasificar los datos mencionados en el item anterior, 
     en esta investigación se utilizó una técinica de machine learning de aprendizaje no supervisado, 
@@ -22,17 +39,19 @@
     (Euclidiana, DTW y MSM)
 
     Ahora se explicará un poco el funcionamiento de estos algoritmos de clasificación, las distintas métricas y a su vez el 
-    como se implementaron en este conjunto de datos en particular y posteriormente en el proximo item los resultados posteriores a aplicar estas
+    como se implementaron en este conjunto de datos en particular, principalmente porque nosotros queremos clasificar series de tiempo y no 
+    puntos o grupos de puntos, sé explicará en su forma mas general, para luego ser explicado de forma específica a nuestro contexto
+    y posteriormente en el proximo item se exhibiran los resultados posteriores al aplicar estas
     clasificaciones.
 
     K-means: Este es un algoritmo clasico de clasificación de grupos o clustering, consiste en elegir (k) 
-    número de separaciones en el conjunto,una vez determinado este número el algoritmo tiene como principio
+    número de separaciones en el conjunto, usualmente este k determinado por otras tecincas, una vez determinado este número el algoritmo tiene como principio
     minimizar distancias de ese punto llamado centroide a los puntos cercanos a el,la ubicación de este
-    centroide en el conjunto de datos es justo lo que se busca minimiza es el objetivo de este algoritmo,
-    al ser ubicado estos k-puntos en sus lugares más optimos los que estan a una distancia similar de este 
-    punto son los que cumplen la distancia minima también y serán los que conformarán el cluster de cada k.
+    centroide en el conjunto de datos es justo lo que se busca minimizar, es el objetivo de este algoritmo,
+    al ser ubicado estos k-puntos en sus lugares más optimos los que estan a una minima de este punto y lejana de los otros 
+     serán los que conformarán cada k-cluster.
 
-    El algoritmo K-means busca minimizar la \textbf{función objetivo}:
+    El algoritmo K-means busca minimizar la función objetivo:
 
 \[
 J = \sum_{j=1}^{k} \sum_{x \in C_j} \| x - \mu_j \|^2
@@ -40,17 +59,15 @@ J = \sum_{j=1}^{k} \sum_{x \in C_j} \| x - \mu_j \|^2
 
 donde:
 
-$J$ es un \textbf{escalar} que representa el costo total (inercia) del clustering.
+$J$ es un escalar que representa el costo total del clustering. 
 
 $k$ es el número de clústeres definidos.
 
 $C_j$ es el conjunto de puntos asignados al clúster $j$.
 
-$\mu_j$ es el \textbf{centroide} del clúster $j$, un vector en $\mathbb{R}^n$.
-
+$\mu_j$ es el centroide del clúster $j$, un vector en este caso en  $\mathbb{R}^2$.
 
 El centroide de cada clúster se calcula como la media de sus puntos:
-
 
 \[
 \mu_j = \frac{1}{|C_j|} \sum_{x \in C_j} x
@@ -58,12 +75,73 @@ El centroide de cada clúster se calcula como la media de sus puntos:
 
 donde $|C_j|$ es el número de puntos en el clúster $j$.
 
+usando estas funciones podemos determinar clasificación de grupos.
+
+DBSCAN: Este es un algoritmo un poco más robusto que el k-means pero a su vez, más complejo y delicado en cuanto a 
+precisión, ya que se basa más en la densidad de el conjunto de datos que en una forma de separación, funciona definiendo un radio de vecindad
+usualmente llamado $\epsilon$ al igual que el k en el algoritmo anterior este epsilon es deducido a partir de
+otras técnicas, elegido el $\epsilon$ este será el parametro principal con el que se rigen los llamados vecindarios, 
+estos vecindarios parten de un centro o núcleo el cual se nombra bajo una condición inicial alguien es núcleo si tiene suficientes puntos
+cerca de el para conformar un vecindario, por tanto el minimo de puntos va a ser una variable a tener en cuenta, 
+esta variable usualmente se nombre tomando en cuenta la dimensionalidad de la nube de puntos más una unidad la elección de clusteres
+en este caso no es fija como en el k-means es teniendo en cuenta los candidatos a nucleos, es por esto que puede que este algoritmo
+sea más sensible a ruido de los datos y demás factores que lo hacen más complicado.
+
+Condiciones y funciones que contiene el DBSCAN;
+
+Sea un conjunto de datos $D$, un punto $p \in D$, un radio $\varepsilon > 0$ y un mínimo de puntos $\text{MinPts}$.
+
+
+La vecindad de un punto $p$ se define como:
+
+
+\[
+N_\varepsilon(p) = \{ q \in D \mid \|p - q\| \leq \varepsilon \}
+\]
+
+
+Un punto $p$ es un punto núcleo si:
+
+
+\[
+|N_\varepsilon(p)| \geq \text{MinPts}
+\]
+
+
+Punto borde: $p$ no cumple la condición de núcleo, pero existe un núcleo $q$ tal que $p \in N_\varepsilon(q)$.
+
+Punto ruido: $p$ no es núcleo ni borde, es decir, no pertenece a ningún clúster.
+
+
+Los clústeres se forman conectando puntos núcleo y sus vecinos alcanzables:
+
+
+\[
+C = \{ p \in D \mid p \text{ es alcanzable desde algún núcleo} \}
+\]
+
+Una vez mencionados los algoritmos, en su forma más general se hará un pequeño ajuste para mostrar en nuestro caso
+como clasificaremos las series de tiempo usando precisamente estos dos métodos, entonces hablarémos de la métrica, una 
+métrica en sí es una distancia que nos dice que tan cerca estan dos objetos entre sí, justo lo que mide el clustering
+por tanto ambos algoritmos los rige una métrica, esta dependerá siempre del contexto de los objetos que estemos midiendo,
+en el caso particular de las series de tiempo nos ajustaremos a tres métricas, las cuales nos ayudarán a hacer el proceso 
+de medición o cercania entre las series de tiempo, ya que si midieramos de la misma forma como medimos puntos a curvas o a matrices o a cualquier elemento de espacios diferentes, probablemente tendríamos resultados
+erroneos o muy alejados de lo que realmente queremos, es por eso que a los algoritmos les cambiaremos sus distancias predeterminadas, por algúnas 
+que son para series de tiempo, pero el proceso de clustering funcionará exactamente igual que si lo hicieramos con cualquier objeto,
+para las medir distancias entre series de tiempo manejaremos tres métricas, estas serán explicadas y posteriormente usadas para ver
+alguna diferencia notoria al usarla para cada algoritmo.
+
+Distancia euclidiana: La distancia euclidiana mide la distancia vertical entre cada par de puntos comparando 2 series de tiempo, midiendo y luego sumando todas las distancias verticales entre los puntos correspondientes
+así;
+
+
+Distancia DTW: 
+
+distancia MSM:
 
 
 
-
-
-    \item{datos}
+\chapter{Introducción a los datos}
     
     En Colombia existe una institución que dirige examenes nacionales de calidad educativa, en estos examenes se mide en este caso la calidad de los colegios nacionales, tanto publicos, privados, rurales en general cualquier colegio en el país,
     el grado en el que se hace este examen es en $11^{\circ}$ o comunmente al finalizar los estudios en bachillerato, el examen se realiza 2 veces al año, este examen tiene una dificultad igual o menor a lo aprendido durante todos los años del colegio, además es calificado por areas obteniendo individualmente un puntaje individual,
@@ -79,8 +157,13 @@ donde $|C_j|$ es el número de puntos en el clúster $j$.
     
     este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el icfes sufrio un por año, es decir 
 
-    \item{resultados}
-    
+    \chapter{resultados}
+
+    Una vez descritos los datos y explicando conceptos utilizados para el clustering se enlistarán todos los resultados obtenidos al procesar los datos
+    por clusterirng y por métrica cada algoritmo, explicando por su puesto su interpretación, tanto 
+    por contexto como por algoritmo, evidenciando diferencias, efectividad y errores, comparando y explicando en este caso cual sería la mejor algoritmo junto con la mejor métrica
+    para clasificar series de tiempo en nuestro conjunto de datos en particular.
+
     DBSCAN (euclidian)
 
     DBSCAN (DTW)
@@ -93,7 +176,7 @@ donde $|C_j|$ es el número de puntos en el clúster $j$.
 
     K-means (MSM)
 
-\end{itemize}
+
 
 
 
