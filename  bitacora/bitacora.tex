@@ -131,14 +131,28 @@ que son para series de tiempo, pero el proceso de clustering funcionará exactam
 para las medir distancias entre series de tiempo manejaremos tres métricas, estas serán explicadas y posteriormente usadas para ver
 alguna diferencia notoria al usarla para cada algoritmo.
 
-Distancia euclidiana: La distancia euclidiana mide la distancia vertical entre cada par de puntos comparando 2 series de tiempo, midiendo y luego sumando todas las distancias verticales entre los puntos correspondientes
-así;
+No sin antes mencionar el objeto con el que realmente se trabajan estos algoritmos, matrices, uno al 
+medir series de tiempo realmente lo hace sobre matrices, estas matrices actuan así por columna tendremos cada categoria
+o serie de tiempo a comparar con otras y por fila tendremos sus registros a travez del tiempo.
 
+Distancia euclidiana: La distancia euclidiana, la más sencilla de las tres distancias a mencionar, mide la distancia vertical entre cada par de puntos pa series de tiempo
+punto a punto y su distancia clasica euclidiana de la recta que hay entre esos puntos al final sumando esas distancias para decidir si son similares entre menor sea su distancia, 
+cabe resaltar que es la distancia más clásica y más usada pero es muy sencillo que se sobreajuste a 
+casi cualquieras series de tiempo, ya que es clasificara por cercania entre las series asi su comportamiento a lo largo del tiempo
+no sea tan similar.
 
-Distancia DTW: 
+Distancia DTW: La distancia DTW mide la distancia entre dos series de tiempo de la siguiente manera, la idea es hallar patrones por muy desfazadas o 
+diferentes que puedan ser las series a travez del tiempo, lo que hace es hallar caminos en que las series se parezcan a travez del tiempo, por decirlo así estirando 
+a la otra grafica mirando todas las posibles distancias entre puntos que pueda tener una serie con respecto a la otra, 
+luego el algoritmo tomará el camino con mejor resultados, lo que significa que se minimice la distancia, este en un principio analiza la distancia de los puntos 
+igual que la distancia euclidiana en la primera iteracción, a medida que las iteracciones suben estirará la grafica contraria y las distancias ya no serán verticales sino cada vez más diagonales, construyendo
+una matriz de costos la cual al final del algoritmo se minimiza quedandose con la distancia más cercana.
 
-distancia MSM:
-
+distancia MSM: Esta es quiza la más matemáticamente hablando, estructurada de las 3, sin embargo también la más sensible, la distancia funciona así,
+no se quiere comparar una serie de tiempo con la otra más bien se quiere ver si alterando con ciertos pasos a una serie tiempo, que tan costoso es convertirla en la otra serie de tiempo, 
+muy similar a una transformación lineal, lo que busca es construir un matriz de costos, minimizando el camino, acá es donde entra lo delicado, las gráficas pueden ser muy similares, pero a la vez
+ser muy costosas de transformar en la otra, lo que dificulta a veces la efectividad del algoritmo, las tres herramientas con las que este algoritmo puede comparar series de tiempo son;
+comparar usando la distancia euclidiana, estirar a la serie 1 y estirar a la serie 2. con estirar se refiere a no seguir midiendo punto a punto sino saltarse un valor para medir con la otra serie y viceversa.
 
 
 \chapter{Introducción a los datos}
@@ -155,7 +169,19 @@ distancia MSM:
 
     casanare, caldas, tolima, caqueta, norte de santander, cordoba, nariño, santander, cundinamarca, cesar, huila, atlantico, la guajira, cauca, bogota, arauca, boyaca, risaralda, bolivar, putumayo, magdalena, quindio, valle del cauca, antioquia, meta
     
-    este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el icfes sufrio un por año, es decir 
+    este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el icfes sufrio un por año, es decir 31 registros de historicos de puntajes globales, 
+    luego el tema de las columnas de los datos, estos datos tienen de promedio de 85 a 90 columnas dependiendo del periodo, ya que estas varian dependiendo de el periodo en el que nos encontremos, ya que en 2014-2 se re estructuro el icfes y sus examenes, haciendolos
+    con diferencia más centrados y a su vez re escalandolos, escala que tendremos en cuenta al mirar los puntajes,
+
+    de 2010-1 a 2014-1, puntajes globales entre 0 a 700, 7 areas evaluativas de 100 puntos máximo cada una.
+
+    de 2014-2 a actualidad puntajes globales entre 0 a 500, 5 areas evaluativas de 100 puntos máximo cada una.
+
+    Teniendo en cuenta esto, ahora vamos a las columnas, como nosotros necesitamos pocas columnas para hacer una buena interpretación de nuestras series de tiempo como cada data set ya esta en categoria departamento, solo juntariamos todos los años en todos los departamentos, considerando nuestra primera hipótesis importante, para la columna 'puntaje global', que en el primer periodo mencionado nos toco construir sumando las columnas de las 7 areas mencionadas, 
+    como esta columna por año tiene aproximadamente entre 200.000 y 450.000 registro aproximadamente lo que se hizo fue asumir que se tendría una mejor interpretación de el puntaje global por departamento si se tomaba la mediana de todos estos datos, esto porque estadisticamente es un valor incesgado hacia valores atipicos, entonces
+    así se reducen los registros por departamento y año-semestre en unidimensionales en cuanto a filas, ahora para todas las columnas restantes lo que se hizo fue por ahora eliminarlas, quedandonos con una columna por data frame ahora si uniendo cada departamento en una estructura de diccionario por año-semestre en el cual la llave es el departamento,
+    y cada data frame tiene dos columnas año y puntaje global, el cual será nuestro primer ajuste para tenera series de tiempo, en un proximo trabajo puede ser interesante clasificar de pronto por correlación o algún tipo de algoritmo otras columnas de las eliminadas
+    para trabajar las series de tiempo en más dimensiones, una vez hecho esto no se ha realizado ningun tratamiento a la columna puntaje global para la escala entre periodos mencionada, por el hecho de que no se logro afinidad o alguna mejora en cuanto a visualización de las series de tiempo.
 
     \chapter{resultados}
 
@@ -164,7 +190,7 @@ distancia MSM:
     por contexto como por algoritmo, evidenciando diferencias, efectividad y errores, comparando y explicando en este caso cual sería la mejor algoritmo junto con la mejor métrica
     para clasificar series de tiempo en nuestro conjunto de datos en particular.
 
-    DBSCAN (euclidian)
+    DBSCAN (euclidian):
 
     DBSCAN (DTW)
 

@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1783035857.25747 "/home/niko/Desktop/Veraaaanooooo/ bitacora/bitacora.tex" "bitacora.pdf" "bitacora" 1783035858.94355 0
+["pdflatex"] 1783298079.20711 "/home/niko/Desktop/Veraaaanooooo/ bitacora/bitacora.tex" "bitacora.pdf" "bitacora" 1783298080.91544 0
   "/etc/texmf/web2c/texmf.cnf" 1772209535.90648 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/niko/Desktop/Veraaaanooooo/ bitacora/bitacora.tex" 1783035856.8701 9545 1905c87e7fcef5db5a0edcae5f2ddacb ""
+  "/home/niko/Desktop/Veraaaanooooo/ bitacora/bitacora.tex" 1783298078.83932 14458 35e4a1b0cf15f65d897401d89ebd3687 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1136768653 3584 402da0b29eafbad07963b1224b222f18 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecbx2488.tfm" 1136768653 3584 0181dbc4d429c3ba4e30feba37b5df96 ""
@@ -121,10 +121,10 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1778778132.32834 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1778778181 8214110 3ddd2fc09d6fa11b9e790ad9f8b330bb ""
-  "bitacora.aux" 1783035858.75516 890 a216baa2ed33a6adf6c4bbedf18ff74f "pdflatex"
-  "bitacora.out" 1783035858.75816 369 2d4f8ac61a965ccbea28189e1a9d911d "pdflatex"
-  "bitacora.tex" 1783035856.8701 9545 1905c87e7fcef5db5a0edcae5f2ddacb ""
-  "bitacora.toc" 1783035858.75816 245 54bcef3aedfe56ffea0c75fed5f3294b "pdflatex"
+  "bitacora.aux" 1783298080.74208 890 e8c88fa1c0d47c0d3f39c0c85b0c5dc9 "pdflatex"
+  "bitacora.out" 1783298080.74508 369 2d4f8ac61a965ccbea28189e1a9d911d "pdflatex"
+  "bitacora.tex" 1783298078.83932 14458 35e4a1b0cf15f65d897401d89ebd3687 ""
+  "bitacora.toc" 1783298080.74671 245 39e5cb6f6da9b0d561c047e3b868c9d9 "pdflatex"
   (generated)
   "bitacora.aux"
   "bitacora.log"
