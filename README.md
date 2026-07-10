@@ -1,4 +1,4 @@
-# Summer reserch about clustering
+# Summer research about clustering
 
 In this research it explores a real data and apply a machine learning technique of non supervized learning. 
     technique that seeks to group similar objects into sets called clusters, so that
