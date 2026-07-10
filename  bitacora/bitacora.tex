@@ -1,54 +1,109 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[12pt,a4paper]{article}
 
 % Paquetes básicos
 \usepackage[utf8]{inputenc}   % Codificación
 \usepackage[T1]{fontenc}      % Fuente
-\usepackage[spanish]{babel}   % Idioma
+\usepackage[spanish]{babel}  % Idioma
 \usepackage{amsmath, amssymb, amsfonts, mathtools, bm} % Matemáticas
 \usepackage{graphicx}         % Imágenes
 \usepackage{hyperref}         % Hipervínculos
 \usepackage{geometry}         % Márgenes
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{apacite}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{gray},
+    showstringspaces=false,
+    breaklines=true,          % Ajusta las líneas largas
+    breakatwhitespace=true,   % Rompe en espacios
+    frame=single,             % Marco alrededor del bloque
+    tabsize=4
+}
+
 \geometry{margin=2.5cm}
 
-% Datos de portada
-\title{Reporte}
-\author{Autor:Nicolas Moreno Martinez}
-\date{\today}
+% Estilo APA: interlineado y sangría
+\usepackage{setspace}
+\doublespacing
+\setlength{\parindent}{1.27cm}
+
 
 \begin{document}
-
-% Portada
-\maketitle
-\thispagestyle{empty}
-\newpage
 
 % Tabla de contenido
 \tableofcontents
 \newpage
 
 % Secciones principales
-\chapter{Metodología}
 
-    Con el fin de clasificar los datos mencionados en el item anterior, 
-    en esta investigación se utilizó una técinica de machine learning de aprendizaje no supervisado, 
-    técnica que que busca agrupar objetos similares en conjuntos llamados clústeres, de manera
-     que los elementos dentro de un grupo sean lo más parecidos posible 
-     entre sí y lo más diferentes posible respecto a otros grupos, similar a una partición clasica 
-     en teoría de conjuntos, para hallar dichos grupos ubicados en los datos se usaron dos algoritmos
-    de clustering, llamados K-means y DBSCAN, ambos realizados con 3 métricas distinas, esto para comparar efectividad del mismo,
-    (Euclidiana, DTW y MSM)
+\section{Introducción a los datos}
+    
+    En Colombia existe una institución que dirige exámenes nacionales de calidad educativa. En estos exámenes se mide la calidad de los colegios nacionales, tanto públicos, privados o rurales. En general cualquier colegio en el país,
+    el grado en el que se hace este examen es en $11^{\circ}$ o comúnmente al finalizar los estudios en bachillerato. El examen se realiza 2 veces al año, presentando una dificultad igual o menor a lo aprendido durante todos los años del colegio. Además es calificado por áreas obteniendo en cada una un puntaje individual, que es sumado y llamado puntaje global.
+    El cual es usado comúnmente como se mencionó para medir la calidad de la institución a la que está inscrito el estudiante a su vez que al mismo estudiante, obteniendo beneficios luego de cierto puntaje, por lo tanto este es un examen importante. Al mismo tiempo, siendo un requisito para ingresar a cualquier entidad de educación superior dentro del país, la entidad responsable de esto el Instituto Colombiano para la Evaluación de la Educación (ICFES) \cite{ICFES2026}, llamada igual que el examen,
+    es quien brinda los datos públicos con los que estoy trabajando, en un histórico de registros semestrales.
+    Se hará un previo resumen de como se interpretan los datos, para el análisis posterior.
 
-    Ahora se explicará un poco el funcionamiento de estos algoritmos de clasificación, las distintas métricas y a su vez el 
-    como se implementaron en este conjunto de datos en particular, principalmente porque nosotros queremos clasificar series de tiempo y no 
-    puntos o grupos de puntos, sé explicará en su forma mas general, para luego ser explicado de forma específica a nuestro contexto
-    y posteriormente en el proximo item se exhibiran los resultados posteriores al aplicar estas
-    clasificaciones.
+    Lo primero a mencionar es que se hará una clasificación departamental para hacer una clasificación de cuáles departamentos son los más similares en cuanto a los resultados del examen. Una vez tomado esto ahora vamos a tiempos. El examen se hace desde 1968, sin embargo la mayor cantidad de departamentos implicados con registro semestral completo, 25 departamentos, se da desde el año 2010-1 hasta el 2025-2, aunque no falta mucho para tener otro registro de 2026-1.
+ Los departamentos mencionados son; 
 
-    K-means: Este es un algoritmo clasico de clasificación de grupos o clustering, consiste en elegir (k) 
-    número de separaciones en el conjunto, usualmente este k determinado por otras tecincas, una vez determinado este número el algoritmo tiene como principio
-    minimizar distancias de ese punto llamado centroide a los puntos cercanos a el,la ubicación de este
-    centroide en el conjunto de datos es justo lo que se busca minimizar, es el objetivo de este algoritmo,
-    al ser ubicado estos k-puntos en sus lugares más optimos los que estan a una minima de este punto y lejana de los otros 
+    Casanare, Caldas, Tolima, Caqueta, Norte de Santander, Cordoba, Nariño, Santander, Cundinamarca, Cesar, Huila, Atlantico, La Guajira, Cauca, Bogota, Arauca, Boyaca, Risaralda, Bolivar, Putumayo, Magdalena, Quindio, Valle del Cauca, Antioquia, Meta.
+    
+    Este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el ICFES sufrió una escaces de estudiantes en el año 2016 primer semestre, es decir 31 registros de históricos de puntajes globales, 
+    luego el tema de las columnas de los datos. Estos datos tienen de promedio de 85 a 90 columnas dependiendo del periodo, ya que estas varían dependiendo del periodo en el que nos encontremos, ya que en 2014-2 se reestructuró el ICFES y sus exámenes, haciéndolos
+    con diferencia más centrados y a su vez reescalándolos, escala que tendremos en cuenta al mirar los puntajes.
+
+    Los principales periodos donde se centrará el estudio son los siguientes:
+    \begin{itemize}
+        \item De 2010-1 a 2014-1, puntajes globales entre 0 a 700, 7 áreas evaluativas de 100 puntos máximo cada una.
+        \item De 2014-2 a actualidad puntajes globales entre 0 a 500, 5 áreas evaluativas de 100 puntos máximo cada una.
+    \end{itemize}
+
+    Teniendo en cuenta esto, ahora vamos a las columnas, como nosotros necesitamos pocas columnas para hacer una buena interpretación de nuestras series de tiempo y cada dataset ya está en categoría departamento, solo juntaríamos todos los años en todos los departamentos, considerando así nuestra primera hipótesis importante. Para la columna 'puntaje global', que en el primer periodo mencionado nos tocó construir sumando las columnas de las 7 áreas mencionadas, 
+    como esta columna por año tiene aproximadamente entre 200.000 y 450.000 registros, el procedimiento se hizo asumiendo que se tendría una mejor interpretación de el puntaje global por departamento si se tomaba la mediana de todos estos datos. Esto porque estadísticamente es un valor insesgado hacia valores atípicos. entonces
+    así se reducen los registros por departamento y año-semestre en unidimensionales en cuanto a filas. Ahora para todas las columnas restantes lo que se hizo fue por ahora eliminarlas, quedándonos con una columna por data frame ahora si uniendo cada departamento en una estructura de diccionario por año-semestre en el cual la llave es el departamento,
+    y cada data frame tiene dos columnas año y puntaje global. Este será nuestro primer ajuste para tenera series de tiempo, en un próximo trabajo puede ser interesante clasificar de pronto por correlación o algún tipo de algoritmo otras columnas de las eliminadas
+    para trabajar las series de tiempo en más dimensiones, una vez hecho esto no se ha realizado ningun tratamiento a la columna puntaje global para la escala entre periodos mencionada, por el hecho de que no se logro afinidad o alguna mejora en cuanto a visualización de las series de tiempo.
+
+\section{Metodología}
+
+    Con el fin de clasificar los datos mencionados en el ítem anterior, 
+    en esta investigación se utilizó una técnica de machine learning de 
+    aprendizaje no supervisado, 
+    técnica que que busca agrupar objetos similares en conjuntos llamados 
+    clústeres, de manera
+     que los elementos dentro de un grupo sean lo más parecidos posible,
+     entre sí y lo más diferentes posible respecto a otros grupos. Eso es 
+     similar a una partición clásica 
+     en teoría de conjuntos. Para hallar dichos grupos ubicados en los datos
+      se usaron dos algoritmos
+    de clustering, llamados K-means y DBSCAN, ambos realizados con tres métricas
+     distintas, aplicadas específicamente para clasificar series de tiempo, que representan el objeto principal de estudio.
+
+    Para proceder con la metodología se explicará la teoría y funcionamiento de estos algoritmos de clasificación, las distintas métricas, y a su vez el 
+    como se implementaron en este conjunto de datos en particular. Esto debido a que se quieren clasificar series de tiempo, y no 
+    puntos o grupos de puntos. Se explicará en su forma más general, para luego ser explicado de forma específica a nuestro contexto 
+    y posteriormente en el próximo ítem se exhibirán los resultados posteriores al aplicar estas
+    clasificaciones, explicando la calidad de resultados obtenidos.
+
+    \subsection{K-means} 
+    
+    Este es un algoritmo clásico de clasificación de grupos o clustering.
+    consiste en elegir (k) número de separaciones en el conjunto, usualmente
+    este k determinado por otras técincas. Una vez determinado este número 
+    el algoritmo tiene como principio
+    minimizar distancias de ese punto llamado centroide a los puntos cercanos 
+    a él. La ubicación de este
+    centroide en el conjunto de datos es justo lo que se busca minimizar, 
+    es el objetivo de este algoritmo,
+    al ser ubicado estos k-puntos en sus lugares más óptimos, los que están 
+    a una mínima de este punto y lejana de los otros 
      serán los que conformarán cada k-cluster.
 
     El algoritmo K-means busca minimizar la función objetivo:
@@ -77,26 +132,35 @@ donde $|C_j|$ es el número de puntos en el clúster $j$.
 
 usando estas funciones podemos determinar clasificación de grupos.
 
-DBSCAN: Este es un algoritmo un poco más robusto que el k-means pero a su vez, más complejo y delicado en cuanto a 
-precisión, ya que se basa más en la densidad de el conjunto de datos que en una forma de separación, funciona definiendo un radio de vecindad
-usualmente llamado $\epsilon$ al igual que el k en el algoritmo anterior este epsilon es deducido a partir de
-otras técnicas, elegido el $\epsilon$ este será el parametro principal con el que se rigen los llamados vecindarios, 
-estos vecindarios parten de un centro o núcleo el cual se nombra bajo una condición inicial alguien es núcleo si tiene suficientes puntos
-cerca de el para conformar un vecindario, por tanto el minimo de puntos va a ser una variable a tener en cuenta, 
-esta variable usualmente se nombre tomando en cuenta la dimensionalidad de la nube de puntos más una unidad la elección de clusteres
-en este caso no es fija como en el k-means es teniendo en cuenta los candidatos a nucleos, es por esto que puede que este algoritmo
+\subsection{DBSCAN} 
+Este es un algoritmo un poco más robusto que el K-means pero a su vez, más complejo 
+y delicado, en cuanto a 
+precisión, ya que se basa más en la densidad del conjunto de datos que en una forma
+ de separación. Funciona definiendo un radio de vecindad,
+usualmente llamado $\epsilon$, al igual que el k en el algoritmo anterior este epsilon 
+es deducido a partir de
+otras técnicas. Elegido el $\epsilon$ este será el parámetro principal con el que se 
+rigen los llamados vecindarios.
+Estos vecindarios, parten de un centro o núcleo el cual se nombra bajo una condición 
+inicial alguien es núcleo si tiene suficientes puntos
+cerca de él para conformar un vecindario. Por tanto, el mínimo de puntos va a ser una 
+variable a tener en cuenta, 
+la cual usualmente se nombra tomando en cuenta la dimensionalidad de la nube de 
+puntos más una unidad. La elección de clústeres
+en este caso no es fija como en el K-means es teniendo en cuenta los candidatos a 
+núcleos, es por esto que puede que este algoritmo
 sea más sensible a ruido de los datos y demás factores que lo hacen más complicado.
 
-Condiciones y funciones que contiene el DBSCAN;
+A continuación se mencionarán las condiciones y funciones que contiene el DBSCAN;
 
 Sea un conjunto de datos $D$, un punto $p \in D$, un radio $\varepsilon > 0$ y un mínimo de puntos $\text{MinPts}$.
 
 
-La vecindad de un punto $p$ se define como:
+La vecindad, de un punto $p$ se define como:
 
 
 \[
-N_\varepsilon(p) = \{ q \in D \mid \|p - q\| \leq \varepsilon \}
+N_\varepsilon(p) = \{ q \in D \mid \|p - q\| \leq \varepsilon \}.
 \]
 
 
@@ -104,106 +168,402 @@ Un punto $p$ es un punto núcleo si:
 
 
 \[
-|N_\varepsilon(p)| \geq \text{MinPts}
+|N_\varepsilon(p)| \geq \text{MinPts}.
 \]
 
-
-Punto borde: $p$ no cumple la condición de núcleo, pero existe un núcleo $q$ tal que $p \in N_\varepsilon(q)$.
-
-Punto ruido: $p$ no es núcleo ni borde, es decir, no pertenece a ningún clúster.
-
+\begin{itemize}
+\item{Punto borde: $p$ no cumple la condición de núcleo, pero existe un núcleo $q$ tal que $p \in N_\varepsilon(q)$.
+}
+\item{Punto ruido: $p$ no es núcleo ni borde, es decir, no pertenece a ningún clúster.
+}
+\end{itemize}
 
 Los clústeres se forman conectando puntos núcleo y sus vecinos alcanzables:
 
 
 \[
-C = \{ p \in D \mid p \text{ es alcanzable desde algún núcleo} \}
+C = \{ p \in D \mid p \text{ es alcanzable desde algún núcleo} \}.
 \]
 
-Una vez mencionados los algoritmos, en su forma más general se hará un pequeño ajuste para mostrar en nuestro caso
-como clasificaremos las series de tiempo usando precisamente estos dos métodos, entonces hablarémos de la métrica, una 
-métrica en sí es una distancia que nos dice que tan cerca estan dos objetos entre sí, justo lo que mide el clustering
-por tanto ambos algoritmos los rige una métrica, esta dependerá siempre del contexto de los objetos que estemos midiendo,
-en el caso particular de las series de tiempo nos ajustaremos a tres métricas, las cuales nos ayudarán a hacer el proceso 
-de medición o cercania entre las series de tiempo, ya que si midieramos de la misma forma como medimos puntos a curvas o a matrices o a cualquier elemento de espacios diferentes, probablemente tendríamos resultados
-erroneos o muy alejados de lo que realmente queremos, es por eso que a los algoritmos les cambiaremos sus distancias predeterminadas, por algúnas 
-que son para series de tiempo, pero el proceso de clustering funcionará exactamente igual que si lo hicieramos con cualquier objeto,
-para las medir distancias entre series de tiempo manejaremos tres métricas, estas serán explicadas y posteriormente usadas para ver
+Una vez mencionados los algoritmos, en su forma más general, se hará un pequeño ajuste para mostrar en este caso
+como se clasificarán las series de tiempo usando precisamente estos dos métodos. Para ello se definirá la noción de métrica. Una 
+métrica en sí es una distancia que dice que tan cerca están dos objetos entre sí, justo lo que mide el clustering
+por tanto ambos algoritmos los rige una métrica. Esta dependerá siempre del contexto de los objetos que estemos midiendo,
+en el caso particular de las series de tiempo nos ajustaremos a tres métricas, las cuáles nos ayudarán a hacer el proceso 
+de medición o cercanía entre las series de tiempo, ya que si se midiera de la misma forma como medimos puntos a curvas o a matrices o cualquier elemento de espacios diferentes, probablemente se tendrían resultados
+erróneos o muy alejados de lo que realmente se espera. Es por eso que a los algoritmos se les cambiarán sus distancias predeterminadas por algunas 
+que son para series de tiempo, pero el proceso de clustering funcionará exactamente igual que si se hiciera con cualquier objeto.
+Para las medir distancias entre series de tiempo se manejarán en este caso tres métricas, estas serán explicadas y posteriormente usadas para ver
 alguna diferencia notoria al usarla para cada algoritmo.
 
-No sin antes mencionar el objeto con el que realmente se trabajan estos algoritmos, matrices, uno al 
-medir series de tiempo realmente lo hace sobre matrices, estas matrices actuan así por columna tendremos cada categoria
-o serie de tiempo a comparar con otras y por fila tendremos sus registros a travez del tiempo.
+No sin antes mencionar el objeto con el que realmente se trabajan estos algoritmos, matrices, al 
+medir series de tiempo realmente lo más usual es hacerlo sobre matrices. Estas matrices actúan así; por columna se tiene cada categoría
+o serie de tiempo a comparar con otras y por fila se tienen sus registros a través del tiempo.
 
-Distancia euclidiana: La distancia euclidiana, la más sencilla de las tres distancias a mencionar, mide la distancia vertical entre cada par de puntos pa series de tiempo
-punto a punto y su distancia clasica euclidiana de la recta que hay entre esos puntos al final sumando esas distancias para decidir si son similares entre menor sea su distancia, 
-cabe resaltar que es la distancia más clásica y más usada pero es muy sencillo que se sobreajuste a 
-casi cualquieras series de tiempo, ya que es clasificara por cercania entre las series asi su comportamiento a lo largo del tiempo
-no sea tan similar.
+\subsection{Distancia euclidiana}
 
-Distancia DTW: La distancia DTW mide la distancia entre dos series de tiempo de la siguiente manera, la idea es hallar patrones por muy desfazadas o 
-diferentes que puedan ser las series a travez del tiempo, lo que hace es hallar caminos en que las series se parezcan a travez del tiempo, por decirlo así estirando 
-a la otra grafica mirando todas las posibles distancias entre puntos que pueda tener una serie con respecto a la otra, 
-luego el algoritmo tomará el camino con mejor resultados, lo que significa que se minimice la distancia, este en un principio analiza la distancia de los puntos 
-igual que la distancia euclidiana en la primera iteracción, a medida que las iteracciones suben estirará la grafica contraria y las distancias ya no serán verticales sino cada vez más diagonales, construyendo
-una matriz de costos la cual al final del algoritmo se minimiza quedandose con la distancia más cercana.
+La distancia euclidiana, la más sencilla de las tres distancias a mencionar, mide la distancia vertical entre cada par de puntos de series de tiempo
+punto a punto y su distancia clásica euclidiana de la recta que hay entre esos puntos al final sumando esas distancias para decidir si son similares entre menor sea su distancia. 
+Cabe resaltar que es la distancia más clásica y más usada pero es muy sencillo que se sobreajuste a 
+casi cualquier series de tiempo, ya que al clasificar series de tiempo por cercanía vertical puede causar que series de tiempo similares en comportamiento pero distintas en escala no se midan con presición, caso opuesto a que 
+una serie no se parezca nada en comportamiento con respecto a quien la comparan, pero queden en cercania por posición vertical punto a punto. En cualquier caso puede no ser muy relevante esta distancia. 
 
-distancia MSM: Esta es quiza la más matemáticamente hablando, estructurada de las 3, sin embargo también la más sensible, la distancia funciona así,
-no se quiere comparar una serie de tiempo con la otra más bien se quiere ver si alterando con ciertos pasos a una serie tiempo, que tan costoso es convertirla en la otra serie de tiempo, 
-muy similar a una transformación lineal, lo que busca es construir un matriz de costos, minimizando el camino, acá es donde entra lo delicado, las gráficas pueden ser muy similares, pero a la vez
-ser muy costosas de transformar en la otra, lo que dificulta a veces la efectividad del algoritmo, las tres herramientas con las que este algoritmo puede comparar series de tiempo son;
+\subsection{Distancia DTW} La distancia DTW mide la distancia entre dos series de tiempo de la siguiente manera. La idea es hallar patrones por muy desfasadas o 
+diferentes que puedan ser las series a través del tiempo. Lo que hace es hallar caminos en que las series se parezcan a traves del tiempo, por decirlo así estirando 
+a la otra gráfica mirando todas las posibles distancias entre puntos que pueda tener una serie con respecto a la otra. 
+Luego el algoritmo tomará el camino con mejor resultados, lo que significa que se minimice la distancia. Este en un principio analiza la distancia de los puntos 
+igual que la distancia euclidiana en la primera iteración, a medida que las iteraciones suben estirará la gráfica contraria y las distancias ya no serán verticales sino cada vez más diagonales, construyendo
+una matriz de costos la cual al final del algoritmo se minimiza quedándose con la distancia más cercana.
+
+\subsection{Distancia MSM} Esta es quizá la más matemáticamente hablando, estructurada de las tres mencionadas. Sin embargo también la más sensible, la distancia funciona así,
+no se quiere comparar una serie de tiempo con la otra más bien se quiere ver si alterando con ciertos pasos a una serie tiempo, qué tan costoso es convertirla en la otra serie de tiempo, 
+muy similar a una transformación lineal. Lo que busca es construir un matriz de costos, minimizando el camino. Acá es donde entra lo delicado, las gráficas pueden ser muy similares, pero a la vez
+ser muy costosas de transformar en la otra, lo que dificulta a veces la efectividad del algoritmo. Las tres herramientas con las que este algoritmo puede comparar series de tiempo son;
 comparar usando la distancia euclidiana, estirar a la serie 1 y estirar a la serie 2. con estirar se refiere a no seguir midiendo punto a punto sino saltarse un valor para medir con la otra serie y viceversa.
 
-
-\chapter{Introducción a los datos}
-    
-    En Colombia existe una institución que dirige examenes nacionales de calidad educativa, en estos examenes se mide en este caso la calidad de los colegios nacionales, tanto publicos, privados, rurales en general cualquier colegio en el país,
-    el grado en el que se hace este examen es en $11^{\circ}$ o comunmente al finalizar los estudios en bachillerato, el examen se realiza 2 veces al año, este examen tiene una dificultad igual o menor a lo aprendido durante todos los años del colegio, además es calificado por areas obteniendo individualmente un puntaje individual,
-    el cual es usado comunmente como se menciono para medir la calidad de la institución donde estudia el estudiante a su vez que al mismo estudiante, obteniendo beneficios luego de cierto puntaje, por lo que sí es un examen ciertamente importante, a su vez es un requisito para ingresar a cualquier entidad de educación superior dentro del país, la entidad encargada de esto (meter referencia del icfes), llamada igual que el examen,
-    es quien brinda los datos publicos con los que estoy trabajando, en un historico de registros semestrales, 
-
-    se hará un previo resumen de como se interpretan los datos, para el analisis posterior.
-
-    Lo primero a mencionar es que se hará una clasificación departamental para hacer una clasificación de cuales departamentos son los más similares en cuanto a los resultados del examen, una vez tomado esto ahora vamos a tiempos, el examen se hace desde 1968, sin embargo la mayor cantidad de departamentos implicados con registro semestral completo, 25 departamentos, se da desde el año 2010-1 hasta el 2025-2, sin embargo no falta mucho para tener otro registro de 2026-1
-, los departamentos mencionados son; 
-
-    casanare, caldas, tolima, caqueta, norte de santander, cordoba, nariño, santander, cundinamarca, cesar, huila, atlantico, la guajira, cauca, bogota, arauca, boyaca, risaralda, bolivar, putumayo, magdalena, quindio, valle del cauca, antioquia, meta
-    
-    este será el primer filtro de nuestros datos, datos que son convertidos a data frame por departamento y por cada semestre desde 2010-1 hasta 2025-2 menos un periodo donde el icfes sufrio un por año, es decir 31 registros de historicos de puntajes globales, 
-    luego el tema de las columnas de los datos, estos datos tienen de promedio de 85 a 90 columnas dependiendo del periodo, ya que estas varian dependiendo de el periodo en el que nos encontremos, ya que en 2014-2 se re estructuro el icfes y sus examenes, haciendolos
-    con diferencia más centrados y a su vez re escalandolos, escala que tendremos en cuenta al mirar los puntajes,
-
-    de 2010-1 a 2014-1, puntajes globales entre 0 a 700, 7 areas evaluativas de 100 puntos máximo cada una.
-
-    de 2014-2 a actualidad puntajes globales entre 0 a 500, 5 areas evaluativas de 100 puntos máximo cada una.
-
-    Teniendo en cuenta esto, ahora vamos a las columnas, como nosotros necesitamos pocas columnas para hacer una buena interpretación de nuestras series de tiempo como cada data set ya esta en categoria departamento, solo juntariamos todos los años en todos los departamentos, considerando nuestra primera hipótesis importante, para la columna 'puntaje global', que en el primer periodo mencionado nos toco construir sumando las columnas de las 7 areas mencionadas, 
-    como esta columna por año tiene aproximadamente entre 200.000 y 450.000 registro aproximadamente lo que se hizo fue asumir que se tendría una mejor interpretación de el puntaje global por departamento si se tomaba la mediana de todos estos datos, esto porque estadisticamente es un valor incesgado hacia valores atipicos, entonces
-    así se reducen los registros por departamento y año-semestre en unidimensionales en cuanto a filas, ahora para todas las columnas restantes lo que se hizo fue por ahora eliminarlas, quedandonos con una columna por data frame ahora si uniendo cada departamento en una estructura de diccionario por año-semestre en el cual la llave es el departamento,
-    y cada data frame tiene dos columnas año y puntaje global, el cual será nuestro primer ajuste para tenera series de tiempo, en un proximo trabajo puede ser interesante clasificar de pronto por correlación o algún tipo de algoritmo otras columnas de las eliminadas
-    para trabajar las series de tiempo en más dimensiones, una vez hecho esto no se ha realizado ningun tratamiento a la columna puntaje global para la escala entre periodos mencionada, por el hecho de que no se logro afinidad o alguna mejora en cuanto a visualización de las series de tiempo.
-
-    \chapter{resultados}
+\section{Resultados}
 
     Una vez descritos los datos y explicando conceptos utilizados para el clustering se enlistarán todos los resultados obtenidos al procesar los datos
-    por clusterirng y por métrica cada algoritmo, explicando por su puesto su interpretación, tanto 
+    por clusterirng y por métrica cada algoritmo. Se añadirá su interpretación, tanto 
     por contexto como por algoritmo, evidenciando diferencias, efectividad y errores, comparando y explicando en este caso cual sería la mejor algoritmo junto con la mejor métrica
-    para clasificar series de tiempo en nuestro conjunto de datos en particular.
+    para clasificar series de tiempo en nuestro conjunto de datos en particular. En todos los métodos se seguirá el mismo paso a paso, veremos como llegamos al cluster, dicho resultado del cluster resultante y explicaremos lo bueno que es con respecto a la gráfica principal.
 
-    DBSCAN (euclidian):
+    Antes de ver como clasificar las series de tiempo se mostrará un grafico para visualizar como estan las series de tiempo en general todas juntas por departamento, para evidenciar que no es sencillo determinar grupos ya que todas estan muy centradas en la misma franja. A su vez para mostrar que a pesar que la escala entre periodos es evidente, esto no causa ningún desbalance desproporcionado en el contenido.
 
-    DBSCAN (DTW)
+    
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/todas.png} % Ajusta el ancho relativo
 
-    DBSCAN (MSM)
+    \caption{Gráfico de todas las series de tiempo} % Texto debajo de la imagen
+    \label{fig:grafico} % Etiqueta para referencias cruzadas
+    \end{figure}
 
-    K-means (euclidian)
+    Como podemos observar a simple vista, no es sencillo clasificar estas series de tiempo, de hecho es complicado hasta visualizar patrones muy diferentes entre ellas, de un modo poco observador se ven todas muy similares. Por esto mismo la importancia de los algoritmos de clustering, ya que nos permiten observar cosas no obvias, y de hecho no visibles facilmente, se podría observar esta imagen por horas y quizás en el mejor de los casos se encuentre uno o dos patrones, nada similar a lo que observaremos.
 
-    K-means (DTW)
+    Se hará la aclaración de que en el mapa de Colombia lo que sea color rojo, son departamentos que no estan en el estudio, por no tener suficientes registros como para ser analizados.
 
-    K-means (MSM)
+    \subsection{DBSCAN distancia euclidiana}
+
+    \subsubsection{Gráfico para escoger épsilon}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_euclid.png} % Ajusta el ancho relativo
+    \caption{Gráfico de algoritmo para determinar épsilon para DBSCAN con distancia euclidiana} % Texto debajo de la imagen
+    \label{fig:db_euclid_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Recordando en anteriores secciones, este es el método que nos permite hallar el $\epsilon$ para hallar las vecindades con las que se pueden formar los grupos. A simple vista se evidencia que nunca crece el comportamiento de la gráfica abruptamente, lo que implica no es muy confiable este método con esta distancia para hacer el clustering de estos datos, ya que no podemos decir
+    que la gráfica crece abruptamente de manera exponencial en un punto concreto. Realmente sube a trozos, lo cual hace a este método inestable encontrando y ubicando las distancias, y probablemente se verá de manera más clara en los puntos atípicos en este caso en particular las series de tiempo atípicas, las cuales puede que a simple vista nos parezcan parte de un grupo en particular en vez de no tener uno.
+    \subsubsection{Clústeres obtenidos y visualización}
+
+    Este es el resultado al aplicar el algoritmo a las series de tiempo;
+
+    \begin{lstlisting}[language=Python]
+cluster_0 = ['casanare', 'tolima', 'caqueta', 'norte_de_santander',
+             'huila', 'arauca', 'putumayo', 'meta']
+
+cluster_1 = ['caldas', 'risaralda']
+
+Puntos_atipicos = ['cordoba', 'narino', 'santander', 'cundinamarca', 'cesar',
+            'atlantico', 'la_guajira', 'cauca', 'bogota', 'boyaca',
+            'bolivar', 'magdalena', 'quindio', 'valle_del_cauca', 'antioquia']
+\end{lstlisting}
 
 
 
+    Como se mencionaba anteriormente, este es un método bastante errado en cuanto a clustering muy cercano o no tan diferente pues, por ejemplo, clasificó a dos departamentos similares, luego a 8 iguales y dejando a 15 departamentos no clasificados, lo que lo hace aún peor algoritmo es que visualmente no se ven los patrones escogidos en las series de tiempo y algunos de los puntos atípicos se ven más de algún cluster que del grupo de los atípicos. Sin embargo, vamos a análizar geográficamente si tiene algún sentido la clasificación.
 
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_euclid_cluster.png} % Ajusta el ancho relativo
+
+    \caption{gráfico de clústeres encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:db_euclid_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    
+    \subsubsection{Mapa de los clústeres}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_euclid_mapa.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados en mapa de Colombia} % Texto debajo de la imagen
+    \label{fig:db_euclid_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Recordando que solo clasificó los grupos color café y azúl oscuro en general podríamos decir que no lo hizo muy bien, simplemente dividido en dos pero no de manera coherente, podríamos decir que más bien fue al azar.
+    
+    \subsection{DBSCAN distancia DTW}
+
+    \subsubsection{Gráfico para escoger épsilon}
+
+    En este caso es más notorio la poca tendencia a subir rápidamente de la gráfica, realmente tomamos el punto más bajo pero pudimos tomar cualquiera de sus picos o mínimos locales si se les puede llamar así, ya que no son tan evidentes, una vez vista esta gráfica pudimos afirmar que el resultado no sería bueno desde un inicio.
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_dtw.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de algoritmo para determinar épsilon para DBSCAN con distancia DTW} % Texto debajo de la imagen
+    \label{fig:db_dtw_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    \subsubsection{Clústeres obtenidos y visualización}
+    
+    Se mostrarán los departamentos clasificados según el algoritmo:
+
+\begin{lstlisting}[language=Python]
+    Cluster_0 =
+['casanare', 'norte_de_santander', 'huila', 'meta']
+
+Cluster_1 =
+['tolima', 'putumayo']
+
+Puntos_atipicos =
+['caldas', 'caqueta', 'cordoba', 'narino', 'santander', 'cundinamarca', 
+'cesar', 'atlantico', 'la_guajira', 'cauca', 'bogota', 'arauca', 'boyaca', 
+'risaralda', 'bolivar', 'magdalena', 'quindio',
+ 'valle_del_cauca', 'antioquia']
+\end{lstlisting}
+
+Este algoritmo con esta métrica en especial como podemos ver es peor, pues clasifica los clústeres con menos departamentos, dejando más sin clasificar. Observando los puntos atípicos, es notorio que las series de tiempo entre clústeres no son muy diferentes, estan en otra escala, pero no son del todo diferentes, pero DBSCAN no mide por escalas, sino por series de tiempo vecinas, lo cual en este caso no es que sea muy útil. 
+    
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_dtw_clusteres.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:db_dtw_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    %vOY ACA 
+    \subsubsection{Mapa de los clústeres}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_dtw_mapa.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados en mapa de Colombia} % Texto debajo de la imagen
+    \label{fig:db_dtw_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Desde el lado geométrico o en el mapa, podemos ver que es muy aleatoria la clasificación y más dispersa que con la anterior métrica.
+
+    \subsection{DBSCAN distancia MSM}
+
+    \subsubsection{Gráfico para escoger épsilon}
+
+    Como en las otras dos métricas usadas para el DBSCAN, no podemos concluir a simple vista un mínimo local o donde empieza a variar abruptamente la gráfica, realmente tiene sus momentos, cosa que no debería pasar, ya que las distancias no deberían alejarse y luego estabilizarse incrementando el radio de cercanía de series de tiempo.
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_msm.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de algoritmo para determinar épsilon para DBSCAN con distancia MSM} % Texto debajo de la imagen
+    \label{fig:db_msm_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    \subsubsection{Clústeres obtenidos y visualización}
+
+    \begin{lstlisting}[language = Python]
+    Cluster_0 =
+['casanare', 'norte_de_santander', 'huila', 'meta']
+Cluster_1 =
+['caldas', 'risaralda']
+Cluster_2 =
+['tolima', 'caqueta', 'cesar', 'arauca', 'putumayo']
+Puntos_atipicos =
+['cordoba', 'narino', 'santander', 'cundinamarca', 'atlantico', 'la_guajira', 'cauca', 'bogota', 'boyaca', 'bolivar', 'magdalena', 'quindio', 'valle_del_cauca', 'antioquia']
+    \end{lstlisting}
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_msm_clusteres.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:db_msm_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Viendo los gráficos también se puede determinar que se parecen bastante por no decir que simplemente están en escalas diferentes. Lo cúal como se vió, no es algo que capte DBSCAN. Por consiguiente se concluye, que no es el mejor algortimo que se pueda usar para clasificar las series de tiempo de los puntajes globales de el ICFES en Colombia.
+
+    \subsubsection{Mapa de los clústeres}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/dbscan_msm_mapa.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados en mapa de Colombia} % Texto debajo de la imagen
+    \label{fig:db_msm_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Geográficamente tampoco es algo muy ordenado ya que no se ve claramente una intención geográfica al hacer el clustering.
+    
+    \subsection{K-means distancia euclidiana}
+
+    \subsubsection{Gráfico para escoger k}
+
+    %VOY ACA
+
+    Es importante recordar que para el algoritmo K-means se necesita escoger cuantos grupos o clusteres queremos específicamente, una gran diferencia con el algoritmo DBSCAN, la idea de el siguiente gráfico es encontrar un máximo local, preferiblemente global, sin embargo no pequeño que máximice la curva, esta curva describe como se comportará la silueta de nuestras distancias, de acuerdo a variar el número de clusters, en este caso $k = 5$.
+    Pero podría ser fácilmente 2, sin embargo es un número considerablemente pequeño en este caso, se considero para una mejor detección la variable $k = 3$, ya que en $k = 5$, existia un cluster con un único departamento, variable que no ayuda a la detección de patrones, sin embargo con 3 podemos ver un número más o menos parejo para la división de los 25 departamentos; 
+    
+   
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_euclid.png} % Ajusta el ancho relativo
+
+    \caption{gráfico de algoritmo para determinar k para k-means con distancia euclidiana} % Texto debajo de la imagen
+    \label{fig:k_eu_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    \subsubsection{clusteres obtenidos y visualización}
+
+    Los clusteres obtenidos son los siguientes;
+
+     \begin{lstlisting}[language = Python]
+    Cluster_0 =
+['cordoba', 'narino', 'santander', 'la_guajira', 'cauca', 'antioquia']
+Cluster_1 =
+['casanare', 'tolima', 'caqueta', 'norte_de_santander', 'cesar', 'huila', 'arauca', 'boyaca', 'putumayo', 'meta']
+Cluster_2 =
+['caldas', 'cundinamarca', 'atlantico', 'bogota', 'risaralda', 'bolivar', 'magdalena', 'quindio', 'valle_del_cauca']
+    \end{lstlisting}    
+
+    Como podemos ver se ve un poco más de orden en la cantidad de departamentos que pertenecen a ciertos clusters, sin embargo como el índice de la silueta no era tan claro, podemos quizás ver estos clústeres un poco sobreajustados, lo que nos lleva a ver los gráficos.
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_euclid_clusteres.png} % Ajusta el ancho relativo
+
+    \caption{gráfico de clusters encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:k_eu_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Evidentemente viendo estos gráficos, podemos ver un poco el sobrejuste ya que a simple vista los grupos se ven similares, especificamente el cluster 0 con el cluster 2, sin embargo podríamos decir que el cluster 1 esta bien clasificado de los otros dos, también podríamos decir que el diagrama de la silueta quizá si se maximice con dos grupos según estas imagenes, y el cluster 0 y 2 sean en verdad uno solo.
+    Sin embargo se verá si hay alguna relación entre estos resultados y su ubicación en el mapa.
+    \subsubsection{mapa de los clusteres}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_euclid_mapa.png} % Ajusta el ancho relativo
+
+    \caption{Mapa de clústeres encontrados} % Texto debajo de la imagen
+    \label{fig:k_eu_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    Como podemos ver parece que el uno es muy solido en lo que construye al menos en el cluster 1, realmente estos departamentos no son muy distintos en el sentido educativo, son departementos principalmente agricolas, con más colegios publicos que privados, pero similares en clima, economía principalmente por sus tierras, departamentos con muchas tierras fertiles.
+
+    \subsection{K-means (DTW):}
+
+    \subsubsection{Gráfico para escoger k}
+
+    Se hará exactamente lo mismo que con la anterior distancia, seleccionaremos el k adecuado en este caso.
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_dtw.png} % Ajusta el ancho relativo
+     
+    \caption{Gráfico de algoritmo para determinar k para k-means con distancia dtw} % Texto debajo de la imagen
+    \label{fig:k_dtw_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+        Acá colocamos más íteracciones de clusteres para ver como interactuaba la gráfica pero es lo mismo, si queremos maximizarla estaría entre $k = 3$ o $k= 2$, sin embargo podemos notar algo un poco más allá por ejemplo aca con $k = 3$, la relación sube casi a 0.48, recordemos que esta gráfica funciona como una correlación y esta es la mas cercana a 1 que tenemos por ahora, a diferencia de la distancia eudlidiana.que era aproximadamente 0.45
+    por lo que podemos concluir por ahora, que esta es la mejor forma de dividir nuestras series de tiempo.
+    
+
+    \subsubsection{clusteres obtenidos y visualización}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_dtw_clusteres.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:k_dtw_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    \begin{lstlisting}[language = Python]    
+    Cluster_0 =
+['caldas', 'cordoba', 'narino', 'santander', 'cundinamarca', 'cauca', 'bogota', 'risaralda', 'magdalena', 'quindio', 'valle_del_cauca']
+Cluster_1 =
+['casanare', 'tolima', 'caqueta', 'norte_de_santander', 'cesar', 'huila', 'arauca', 'boyaca', 'putumayo', 'antioquia', 'meta']
+Cluster_2 =
+['atlantico', 'la_guajira', 'bolivar']
+\end{lstlisting}
+    \subsubsection{mapa de los clusteres}
+
+    ahora sí estamos cada vez más cerca de lo perfecto en división ya que esos últimos departamentos son muy similares, todos costeros con colegios publicos en su mayoria diferenciando aunque rodeando a su departamento en medio magdalena ya que este tiene una cuidad con economía más estable y sí comparable a a la de la capitál de el país, por ahora este es el clustering más objetivo contextualmente
+    y ya que es el más fuerte en relación se complementa perfectamente con su contexto
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición 
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_dtw_mapa.png} % Ajusta el ancho relativo
+
+    
+    \caption{Clústeres en el mapa de Colombia por departamento } % Texto debajo de la imagen
+    \label{fig:k_dtw_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+Como podemos ver se evidencian comportamientos más distintos entre los clústeres a simple vista también se puede observar que estos estan muy bien construidos, dejando como similares a departamentos que en verdad si son similares en aspectos de educación.
+
+    \subsection{K-means distancia MSM}
+
+    \subsubsection{Gráfico para escoger k}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.7\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_msm.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de algoritmo para determinar k para K-means con distancia MSM} % Texto debajo de la imagen
+    \label{fig:k_msm_1} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    En este gráfico es evidente que el máximo local es 3 lo que refuerza la idea que se ha tenido con las otras distancia mostrando más armonía en el $k =3$, sin embargo en este caso es un máximo global, lo cual es el mejor caso posible, a su vez este máximo global es alcanzado con una relación de $0.46325453913197945$, lo cual es menos que el resultado anterior, el cual era $0.4725628471388076$, por lo que es mejor y concluyendo además, ya que este es el último a mencionar, el mejor algortimo es el anterior, k-means usando la métrica dtw.
+
+    \subsubsection{clusteres obtenidos y visualización}
+
+    Los clústeres obtenidos son;
+
+    \begin{lstlisting}[language = Python]   
+    Cluster_0 = 
+['caldas', 'cordoba', 'narino', 'santander', 'cundinamarca', 'cauca', 'bogota', 'boyaca', 'risaralda', 'bolivar', 'magdalena', 'quindio', 'valle_del_cauca', 'antioquia']
+Cluster_1 =
+['casanare', 'tolima', 'caqueta', 'norte_de_santander', 'cesar', 'huila', 'arauca', 'putumayo', 'meta']
+Cluster_2 = 
+['atlantico', 'la_guajira']
+    \end{lstlisting}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=1.0\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_msm_clusteres.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados para series de tiempo} % Texto debajo de la imagen
+    \label{fig:k_msm_2} % Etiqueta para referencias cruzadas
+    \end{figure}
+    
+    \subsubsection{Mapa de los clústeres}
+
+    \begin{figure}[H] % El entorno figure permite añadir título y posición
+    \centering % Centra la imagen
+    \includegraphics[width=0.6\textwidth]{/home/niko/Desktop/Veraaaanooooo/img/k_msm_mapa.png} % Ajusta el ancho relativo
+
+    \caption{Gráfico de clústeres encontrados en mapa de Colombia}  % Texto debajo de la imagen
+    \label{fig:k_msm_3} % Etiqueta para referencias cruzadas
+    \end{figure}
+
+    \section{Representación de los resultados con gráfos}
+
+    \section{Conclusiones}
+
+    En este trabajo se ha logrado clasificar las series de tiempo de los puntajes globales del ICFES en Colombia, usando dos algoritmos de clustering, K-means y DBSCAN, con tres métricas distintas, euclidiana, DTW y MSM.
+    a su vez se han detectado los mejores algoritmos y métricas para clasificar estas series de tiempo, siendo el mejor algoritmo K-means con la métrica DTW, ya que es el que mejor clasifica las series de tiempo en clústeres más coherentes y con mayor relación entre ellos, además de tener una mejor relación de silueta.
+    
+    Añadiendo a lo anterior, se ha evidenciado que la métrica DTW es la más adecuada para medir la distancia entre series de tiempo, ya que permite capturar patrones similares a pesar de posibles desfasajes temporales, lo que resulta en una clasificación más precisa y significativa. Concordanto con datos de la literatura, la métrica DTW es ampliamente reconocida por su capacidad para manejar series de tiempo con variaciones en la velocidad y la fase, lo que la hace especialmente útil en contextos donde los datos pueden no estar alineados temporalmente. Contexualmente esta también es correcta en este caso ya que los departamentos que se clasifican en un mismo clúster tienen características similares en cuanto a educación, clima y economía, lo que refuerza la validez de los resultados obtenidos.
+
+\section{Referencias}
+
+\bibliographystyle{apacite}
+\bibliography{referencias}
 
 \end{document}

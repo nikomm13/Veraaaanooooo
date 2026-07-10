@@ -1,4 +1,37 @@
 \babel@toc {spanish}{}\relax 
-\contentsline {chapter}{\numberline {1}Metodología}{2}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Introducción a los datos}{5}{chapter.2}%
-\contentsline {chapter}{\numberline {3}resultados}{7}{chapter.3}%
+\contentsline {section}{\numberline {1}Introducción a los datos}{3}{section.1}%
+\contentsline {section}{\numberline {2}Metodología}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}K-means}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}DBSCAN}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Distancia euclidiana}{8}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Distancia DTW}{8}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Distancia MSM}{9}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Resultados}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}DBSCAN distancia euclidiana}{11}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Gráfico para escoger épsilon}{11}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Clústeres obtenidos y visualización}{11}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Mapa de los clústeres}{13}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.2}DBSCAN distancia DTW}{13}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Gráfico para escoger épsilon}{13}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Clústeres obtenidos y visualización}{14}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Mapa de los clústeres}{16}{subsubsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.3}DBSCAN distancia MSM}{16}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Gráfico para escoger épsilon}{16}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Clústeres obtenidos y visualización}{17}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Mapa de los clústeres}{19}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}K-means distancia euclidiana}{19}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Gráfico para escoger k}{19}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}clusteres obtenidos y visualización}{20}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}mapa de los clusteres}{22}{subsubsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.5}K-means (DTW):}{22}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Gráfico para escoger k}{22}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}clusteres obtenidos y visualización}{24}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}mapa de los clusteres}{25}{subsubsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.6}K-means distancia MSM}{26}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}Gráfico para escoger k}{26}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}clusteres obtenidos y visualización}{26}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.3}Mapa de los clústeres}{28}{subsubsection.3.6.3}%
+\contentsline {section}{\numberline {4}Representación de los resultados con gráfos}{28}{section.4}%
+\contentsline {section}{\numberline {5}Conclusiones}{28}{section.5}%
+\contentsline {section}{\numberline {6}Referencias}{29}{section.6}%
+\contentsline {section}{Referencias}{29}{section*.2}%

@@ -1,0 +1,25 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+para la Evaluación de~la Educación~ICFES%
+}{%
+para la Evaluación de~la Educación~ICFES%
+}{%
+{\protect \APACyear {2026}}%
+}]{%
+ICFES2026}
+\APACinsertmetastar {%
+ICFES2026}%
+\begin{APACrefauthors}%
+para la Evaluación de~la Educación~ICFES, I\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2026}{}{}.
+\newblock
+\APACrefbtitle {Compromiso institucional con la evaluación educativa en Colombia.} {Compromiso institucional con la evaluación educativa en colombia.}
+\newblock
+\APAChowpublished {\url{https://www.icfes.gov.co}}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

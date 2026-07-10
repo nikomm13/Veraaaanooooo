@@ -17005,7 +17005,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "COLAG", 
-        "name": "La Guajira"
+        "name": "La_Guajira"
       }, 
       "id": 7
     }, 
@@ -26961,7 +26961,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "CONSA", 
-        "name": "Norte de Santander"
+        "name": "Norte_de_Santander"
       }, 
       "id": 9
     }, 
@@ -48103,7 +48103,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "COVAC", 
-        "name": "Valle del Cauca"
+        "name": "Valle_del_Cauca"
       }, 
       "id": 14
     }, 
@@ -66995,7 +66995,7 @@
       "properties": {
         "source": "https://simplemaps.com", 
         "id": "CODC", 
-        "name": "Distrito Capital de Bogotá"
+        "name": "Bogota"
       }, 
       "id": 28
     }, 
